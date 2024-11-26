@@ -113,6 +113,12 @@ class Calculator {
     let currInput = document.querySelector("#curr");
     if (currInput.textContent === "0") {
       currInput.textContent = value;
+    } else if (calculator.prev === null) {
+      console.log("i was here");
+      this.prev = this.curr;
+      this.curr = 0;
+      this.#render();
+      this.appendCurr(value);
     } else {
       currInput.textContent = currInput.textContent + value;
     }
