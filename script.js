@@ -15,6 +15,7 @@ class Calculator {
       this.curr = 0;
     }
     this.currOp = "add";
+    this.#render();
   }
 
   subtract() {
@@ -26,6 +27,7 @@ class Calculator {
       this.curr = 0;
     }
     this.currOp = "sub";
+    this.#render();
   }
 
   multiply() {
@@ -37,6 +39,7 @@ class Calculator {
       this.curr = 0;
     }
     this.currOp = "mul";
+    this.#render();
   }
 
   divide() {
@@ -44,12 +47,13 @@ class Calculator {
       this.prev = this.curr;
       this.curr = 0;
     } else if (this.curr === 0) {
-      throw new Error("divide by 0 error");
+      alert("divide by 0 error");
     } else {
       this.prev = this.prev / this.curr;
       this.curr = 0;
     }
     this.currOp = "div";
+    this.#render();
   }
 
   evaluate() {
@@ -66,7 +70,7 @@ class Calculator {
         break;
       case "div":
         if (this.curr === 0) {
-          throw new Error("divide by 0 error");
+          alert("divide by 0 error");
         } else {
           res = this.prev / this.curr;
         }
@@ -76,36 +80,118 @@ class Calculator {
     }
     this.curr = res;
     this.prev = null;
+    this.#render();
   }
 
   percentage() {
     this.curr = this.curr / 100;
+    this.#render();
   }
 
   signChange() {
     this.curr = this.curr * -1;
+    this.#render();
   }
 
   clear() {
     this.curr = 0;
+    this.#render();
   }
 
   clearEverything() {
     this.curr = 0;
     this.prev = null;
     this.currOp = 0;
+    this.#render();
   }
 
   setCurr(value) {
     this.curr = value;
   }
+
+  appendCurr(value) {
+    let currInput = document.querySelector("#curr");
+    if (currInput.textContent === "0") {
+      currInput.textContent = value;
+    } else {
+      currInput.textContent = currInput.textContent + value;
+    }
+    this.setCurr(parseFloat(currInput.textContent));
+  }
+
+  #render() {
+    let currInput = document.querySelector("#curr");
+    let prevComp = document.querySelector("#prev");
+    currInput.textContent = this.curr;
+    prevComp.textContent = this.prev;
+  }
 }
+
+//initialize calculator
+const calculator = new Calculator();
 
 // keep track of key presses as onkeypress event has been depracated.
 let keysPressed = {};
 
-let addBtn = document.querySelector("#add");
+// operator buttons
+const addBtn = document.querySelector("#add");
+const subBtn = document.querySelector("#subtract");
+const mulBtn = document.querySelector("#multiply");
+const divBtn = document.querySelector("#divide");
+
+// number pad
+const nums = document.querySelectorAll(".nums");
+
+// misc buttons
+const ceBtn = document.querySelector("#all-clear");
+const cBtn = document.querySelector("#clear");
+const signBtn = document.querySelector("#sign");
+const pctBtn = document.querySelector("#pct");
+const decimalBtn = document.querySelector("#decimal");
+const evaluateBtn = document.querySelector("#evaluate");
+
+nums.forEach((btn) => {
+  btn.addEventListener("click", (event) => {
+    calculator.appendCurr(event.target.id);
+  });
+});
+
+decimalBtn.addEventListener("click", (event) => {
+  calculator.appendCurr(".");
+});
+
+ceBtn.addEventListener("click", (event) => {
+  calculator.clearEverything();
+});
+
+cBtn.addEventListener("click", (event) => {
+  calculator.clear();
+});
+
+signBtn.addEventListener("click", (event) => {
+  calculator.signChange();
+});
+
+pctBtn.addEventListener("click", (event) => {
+  calculator.percentage();
+});
 
 addBtn.addEventListener("click", (event) => {
-  console.log(event.target.innerHTML);
+  calculator.add();
+});
+
+subBtn.addEventListener("click", (event) => {
+  calculator.subtract();
+});
+
+mulBtn.addEventListener("click", (event) => {
+  calculator.multiply();
+});
+
+divBtn.addEventListener("click", (event) => {
+  calculator.divide();
+});
+
+evaluateBtn.addEventListener("click", (event) => {
+  calculator.evaluate();
 });
